@@ -5,6 +5,7 @@ from mysql.connector import Error
 from dotenv import load_dotenv
 import os
 import decimal
+import time
 
 load_dotenv()
 
@@ -248,8 +249,24 @@ def search_products():
     
     return jsonify(products)
 
+
+
+def wait_for_db():
+    for i in range(10):
+        conn = get_db_connection()
+        if conn:
+            print("DB ready")
+            conn.close()
+            return True
+        print(f"Waiting DB... attempt {i+1}/10")
+        time.sleep(5)
+    return False
+
+
 if __name__ == '__main__':
+    wait_for_db()
     init_db()
+
     port = int(os.getenv('PORT', 8082))
-    print(f"Backend 2 (Product Service) running on port {port}")
+    print(f"Backend running on port {port}")
     app.run(host='0.0.0.0', port=port, debug=True)
