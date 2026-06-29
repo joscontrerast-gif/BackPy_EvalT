@@ -5,7 +5,8 @@ from mysql.connector import Error
 from dotenv import load_dotenv
 import os
 import decimal
-import time
+import time from mysql.connector 
+import Error
 
 load_dotenv()
 
@@ -17,17 +18,25 @@ db_config = {
     'host': os.getenv('DB_HOST', 'localhost'),
     'port': int(os.getenv('DB_PORT', 3306)),
     'user': os.getenv('DB_USER', 'root'),
-    'password': os.getenv('DB_PASSWORD', ''),
+    'password': os.getenv('DB_PASSWORD', 'root'),
     'database': os.getenv('DB_NAME', 'products_db')
 }
 
+
+
 def get_db_connection():
-    try:
-        connection = mysql.connector.connect(**db_config)
-        return connection
-    except Error as e:
-        print(f"Error connecting to MySQL: {e}")
-        return None
+    for i in range(15):
+        try:
+            connection = mysql.connector.connect(**db_config)
+            print("DB connected")
+            return connection
+        except Error as e:
+            print(f"DB not ready ({i+1}/15): {e}")
+            time.sleep(3)
+
+    print("DB connection failed permanently")
+    return None
+
 
 def init_db():
     connection = get_db_connection()
