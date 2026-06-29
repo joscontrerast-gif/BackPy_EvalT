@@ -5,8 +5,8 @@ from mysql.connector import Error
 from dotenv import load_dotenv
 import os
 import decimal
-import time from mysql.connector 
-import Error
+import mysql.connector
+from mysql.connector import Error
 
 load_dotenv()
 
